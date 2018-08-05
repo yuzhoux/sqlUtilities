@@ -29,3 +29,17 @@ as
 with temp1 as (select col1,col2 from table1),
 temp2 as (select col3,col4 from table2)
 select temp1.col1, temp1.col2, temp2.col4 from temp1 left join temp2 on temp1.col1=temp2.col3;
+
+-- create table with partitions and insert into a partition
+drop table if exists table_schema.table_name;
+create table table_schema.table_name (col1 string, col2 int, col3 string)
+partitioned by (month string)
+row format delimited fields terminated by ','
+stored as textfile
+location "hdfs://location";
+
+alter table table_schema.table_name drop if exists partition(month='2018-07');
+
+insert into table_schema.table_name partition(month='2018-07')
+select col1, col2, col3, count(1) as CNT,
+sum(case when col5>0 then col6 else 0 end) as Total from table group by col4;
