@@ -2,6 +2,4 @@
 
 **1.frequently_used_queries.sql**
 
-This collection are my frequently used queries
-
-**2.**
+This collection has my frequently used queries
