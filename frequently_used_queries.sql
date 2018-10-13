@@ -20,7 +20,7 @@ location "hdfs://location";
 
 load data inpath "hdfs://location/file.txt" overwrite into table table_schema.table_name;
 
--- using with to create temp tables
+-- using With clause to create temp tables
 drop table if exists table_schema.table_name;
 create table table_schema.table_name
 stored as textfile
@@ -43,3 +43,13 @@ alter table table_schema.table_name drop if exists partition(month='2018-07');
 insert into table_schema.table_name partition(month='2018-07')
 select col1, col2, col3, count(1) as CNT,
 sum(case when col5>0 then col6 else 0 end) as Total from table group by col4;
+
+-- work with date
+drop table if exists table_schema.table_name;
+create table table_schema.table_name
+stored as textfile
+location "hdfs://location"
+as select from_unixtime(unix_timestamp(dt,'yyyyMMdd'),'yyy-MM-dd') as date,
+cast(date_sub(cast(from_unixtime(dt,'yyyyMMdd','yyy-MM-dd') as timestamp),interval 13 months) as string) as begin_date
+from table;
+
